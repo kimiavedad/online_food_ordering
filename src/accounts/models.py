@@ -14,6 +14,7 @@ class CustomUser(AbstractUser):
     last_name = models.CharField(max_length=100, null=True, blank=True)
     device = models.CharField(max_length=200, null=True, blank=True)
     role = models.CharField(choices=ROLE_CHOICES, max_length=20)
+    address = models.ManyToManyField('Address', blank=True)
 
     def __str__(self):
         if self.first_name:
@@ -40,6 +41,9 @@ class SiteAdmin(CustomUser):
         proxy = True
         verbose_name = 'Site Admin'
 
-# class Role(models.Model):
-#     ROLE_CHOICES = [('')]
-#     name = models.CharField(choices=)
+
+class Address(models.Model):
+    city = models.CharField(max_length=100)
+    street = models.CharField(max_length=500)
+    plaque = models.PositiveIntegerField()
+
