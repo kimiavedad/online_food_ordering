@@ -58,6 +58,9 @@ class MenuItem(models.Model):
     stock = models.PositiveIntegerField()
     price = models.PositiveIntegerField()
 
+    def __str__(self):
+        return str(self.branch) + " - " + self.food.name
+
 
 class Order(models.Model):
     STATUS_CHOICES = [
@@ -70,8 +73,14 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(choices=STATUS_CHOICES, max_length=10)
 
+    def __str__(self):
+        return "order" + str(self.id)
+
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
-    menu_item = models.ManyToManyField(MenuItem, related_name='orders')
+    menu_item = models.ForeignKey(MenuItem, on_delete=models.CASCADE, related_name='orders')
     quantity = models.PositiveIntegerField()
+
+    def __str__(self):
+        return str(self.menu_item)
