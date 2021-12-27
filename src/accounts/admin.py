@@ -19,7 +19,8 @@ class CustomUserAdmin(UserAdmin):
     add_fieldsets = UserAdmin.add_fieldsets + (
         (None, {'fields': ('email', 'role',)}),
     )
-    list_display = ['email', 'username', ]
+    list_display = ['email', 'username', 'date_joined']
+    date_hierarchy = 'date_joined'
 
 
 admin.site.register(CustomUser, CustomUserAdmin)
@@ -27,10 +28,12 @@ admin.site.register(CustomUser, CustomUserAdmin)
 
 @admin.register(Customer)
 class CustomerProxyAdmin(admin.ModelAdmin):
-    list_display = ['id', 'username', 'email', ]
+    fields = ['email', 'role']
+    list_display = ['id', 'username', 'role', 'email', ]
     list_display_links = ['id']
-    list_editable = ['email']
+    list_editable = ['username']
     search_fields = ['username', 'email']
+    readonly_fields = ['email', ]
 
     def get_queryset(self, request):
         return Customer.objects.filter(is_staff=False)
@@ -41,10 +44,13 @@ class CustomerProxyAdmin(admin.ModelAdmin):
 
 @admin.register(RestaurantManager)
 class RestaurantManagerProxyAdmin(admin.ModelAdmin):
-    list_display = ['id', 'username', 'email', ]
+    fields = ['email', 'role']
+    list_display = ['id', 'first_name', 'role', 'email', ]
     list_display_links = ['id']
-    list_editable = ['email']
+    list_editable = ['first_name']
     search_fields = ['username', 'email']
+    readonly_fields = ['email', ]
+    empty_value_display = '-'
 
     def get_queryset(self, request):
         return RestaurantManager.objects.filter(is_staff=True, is_superuser=False)
@@ -55,10 +61,12 @@ class RestaurantManagerProxyAdmin(admin.ModelAdmin):
 
 @admin.register(SiteAdmin)
 class SiteAdminProxyAdmin(admin.ModelAdmin):
-    list_display = ['id', 'username', 'email']
-    list_display_links = ['username']
-    list_editable = ['email']
+    fields = ['email', 'role']
+    list_display = ['id', 'username', 'role', 'email', ]
+    list_display_links = ['id']
+    list_editable = ['username']
     search_fields = ['username', 'email']
+    readonly_fields = ['email', ]
 
     def get_queryset(self, request):
         return SiteAdmin.objects.filter(is_superuser=True)
@@ -67,4 +75,8 @@ class SiteAdminProxyAdmin(admin.ModelAdmin):
         return False
 
 
-admin.site.register(Address)
+@admin.register(Address)
+class AddressAdmin(admin.ModelAdmin):
+    list_filter = ['city']
+    list_display = ['id', 'city']
+
