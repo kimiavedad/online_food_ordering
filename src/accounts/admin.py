@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .forms import CustomUserChangeForm, CustomUserCreationForm
-from .models import SiteAdmin, RestaurantManager, Customer
+from .models import SiteAdmin, RestaurantManager, Customer, Address
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 
@@ -11,7 +11,14 @@ class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
     model = CustomUser
-    fieldsets = UserAdmin.fieldsets + ((None, {'fields': ('role', 'device', 'address')}),)
+    fieldsets = (
+        ('Personal Info', {'fields': ('username', 'first_name', 'last_name', 'role', 'device', 'address')}),
+        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser')}),
+        ('Important dates', {'fields': ('last_login', 'date_joined')}),
+    )
+    add_fieldsets = UserAdmin.add_fieldsets + (
+        (None, {'fields': ('email', 'role',)}),
+    )
     list_display = ['email', 'username', ]
 
 
@@ -31,8 +38,8 @@ class CustomerProxyAdmin(admin.ModelAdmin):
 
 @admin.register(RestaurantManager)
 class RestaurantManagerProxyAdmin(admin.ModelAdmin):
-    list_display = ['username', 'email', ]
-    list_display_links = ['username']
+    list_display = ['id', 'username', 'email', ]
+    list_display_links = ['id']
     list_editable = ['email']
     search_fields = ['username', 'email']
 
@@ -49,3 +56,6 @@ class SiteAdminProxyAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         return SiteAdmin.objects.filter(is_superuser=True)
+
+
+admin.site.register(Address)
