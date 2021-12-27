@@ -35,6 +35,9 @@ class CustomerProxyAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         return Customer.objects.filter(is_staff=False)
 
+    def has_add_permission(self, request, obj=None):
+        return False
+
 
 @admin.register(RestaurantManager)
 class RestaurantManagerProxyAdmin(admin.ModelAdmin):
@@ -46,6 +49,9 @@ class RestaurantManagerProxyAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         return RestaurantManager.objects.filter(is_staff=True, is_superuser=False)
 
+    def has_add_permission(self, request, obj=None):
+        return False
+
 
 @admin.register(SiteAdmin)
 class SiteAdminProxyAdmin(admin.ModelAdmin):
@@ -56,6 +62,9 @@ class SiteAdminProxyAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         return SiteAdmin.objects.filter(is_superuser=True)
+
+    def has_add_permission(self, request, obj=None):
+        return False
 
 
 admin.site.register(Address)
