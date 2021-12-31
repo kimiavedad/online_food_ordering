@@ -5,27 +5,23 @@ from django.contrib.auth.models import AbstractUser
 
 
 class CustomUser(AbstractUser):
-    ROLE_CHOICES = [
-        ('مدیر سایت', 'مدیر سایت'),
-        ('مدیر رستوران', 'مدیر رستوران'),
-        ('مشتری', 'مشتری'),
-    ]
+    class Role(models.TextChoices):
+        SITE_ADMIN = 'ادمین سایت', 'ادمین سایت'
+        RESTAURANT_MANAGER = 'مدیر رستوران', 'مدیر رستوران'
+        CUSTOMER = 'مشتری', 'مشتری'
+
     email = models.EmailField()
-    first_name = models.CharField(max_length=100, null=True, blank=True)
-    last_name = models.CharField(max_length=100, null=True, blank=True)
     device = models.CharField(max_length=200, null=True, blank=True)
-    role = models.CharField(choices=ROLE_CHOICES, max_length=20)
-    address = models.ManyToManyField('Address', blank=True)
+    role = models.CharField(choices=Role.choices, max_length=20, default=Role.CUSTOMER)
+    addresses = models.ManyToManyField('Address', blank=True, through='UserAddress')
 
     def __str__(self):
-        if self.first_name:
-            return self.first_name
-        elif self.username:
-            return self.username
-        return self.device
+        return self.email
 
 
 class Customer(CustomUser):
+    #   we don't need to override save method for customer, because by default it is a normal user when created,
+    #   also the default value for role is set to "مشتری"
     class Meta:
         proxy = True
 
@@ -34,16 +30,34 @@ class RestaurantManager(CustomUser):
     class Meta:
         proxy = True
 
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.role = CustomUser.Role.RESTAURANT_MANAGER
+            self.is_staff = True
+        return super().save(*args, **kwargs)
+
 
 class SiteAdmin(CustomUser):
     class Meta:
         proxy = True
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.role = CustomUser.Role.SITE_ADMIN
+            self.is_superuser = True
+        return super().save(*args, **kwargs)
 
 
 class Address(models.Model):
     city = models.CharField(max_length=100)
     street = models.CharField(max_length=500)
     plaque = models.PositiveIntegerField()
+    primary = models.BooleanField(null=True)
 
     def __str__(self):
         return self.city + " - " + self.street
+
+
+class UserAddress(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    address = models.ForeignKey(Address, on_delete=models.CASCADE)
