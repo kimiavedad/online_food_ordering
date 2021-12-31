@@ -26,7 +26,7 @@ class Meal(models.Model):
 
 
 class Food(models.Model):
-    meal = models.ManyToManyField(Meal)
+    meals = models.ManyToManyField(Meal)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     description = models.TextField(max_length=500, null=True, blank=True)
@@ -41,9 +41,11 @@ class Branch(models.Model):
     manager = models.OneToOneField('accounts.RestaurantManager', on_delete=models.CASCADE)
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='branches')
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='branches')
+    address = models.OneToOneField('accounts.Address', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     description = models.TextField(max_length=500, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    primary = models.BooleanField()
 
     class Meta:
         verbose_name_plural = 'branches'
@@ -69,7 +71,7 @@ class Order(models.Model):
         ('ارسال', 'ارسال'),
         ('تحویل', 'تحویل'),
     ]
-    user = models.ForeignKey('accounts.CustomUser', on_delete=models.SET_NULL, null=True, blank=True)
+    user_address = models.ForeignKey('accounts.UserAddress', on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(choices=STATUS_CHOICES, max_length=10)
 
