@@ -1,9 +1,5 @@
 @import url('https://v1.fontapi.ir/css/Sahel');
 
 body {
-    font-family: "Sahel";
-    background-image: url('../images/download.jfif');
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-size: 100% 100%;
+    font-family: "Sahel", sans-serif, Arial;
 }
