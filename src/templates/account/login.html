@@ -1,15 +1,15 @@
 {% extends 'base.html' %}
 {% comment %} {% load crispy_forms_tags %} {% endcomment %}
 
-{% block title %}Log In{% endblock title %}
+{% block title %},ورود{% endblock title %}
 
 {% block content %}
 <div class="container p-3">
-    <h2>Log In</h2>
+    <h2>ورود</h2>
   <form method="post">
-    {% csrf_token %}
-    {{ form.as_p}}
-    <button class="btn btn-success" type="submit">Log In</button>
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button class="btn btn-success" type="submit">ورود</button>
   </form>
 </div>
 

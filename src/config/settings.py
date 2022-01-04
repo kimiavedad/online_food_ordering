@@ -43,10 +43,12 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'crispy_forms',
 
     # Local
     'accounts',
     'online_food_ordering',
+    'site_admin',
 ]
 
 MIDDLEWARE = [
@@ -150,7 +152,7 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 
 # django-allauth config
 
-LOGIN_REDIRECT_URL = 'home'
+LOGIN_REDIRECT_URL = 'login_success'
 ACCOUNT_LOGOUT_REDIRECT = 'home'
 SITE_ID = 1
 AUTHENTICATION_BACKENDS = (
@@ -167,3 +169,9 @@ ACCOUNT_UNIQUE_EMAIL = True
 # ACCOUNT_FORMS = {
 #     'signup': 'accounts.forms.CustomSignupForm',
 # }
+
+
+# crispy config
+
+CRISPY_TEMPLATE_PACK = 'bootstrap5'
+

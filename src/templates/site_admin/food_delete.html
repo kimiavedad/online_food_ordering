@@ -1,0 +1,11 @@
+{% extends "site_admin/admin_panel.html" %}
+
+{% block content %}
+<div class="container p-3">
+  <h1>پاک کردن غذا</h1>
+  <form action="" method="post">{% csrf_token %}
+    <p>مطمئنی میخوای "{{ food.name }}" رو پاک کنی؟</p>
+    <button class="btn btn-danger ml-2" type="submit">تایید</button>
+  </form>
+</div>
+{% endblock content %}

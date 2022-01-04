@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 
 class Restaurant(models.Model):
@@ -9,7 +10,7 @@ class Restaurant(models.Model):
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
 
     class Meta:
         verbose_name_plural = 'categories'
@@ -19,7 +20,7 @@ class Category(models.Model):
 
 
 class Meal(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.name
@@ -28,7 +29,7 @@ class Meal(models.Model):
 class Food(models.Model):
     meals = models.ManyToManyField(Meal)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
     description = models.TextField(max_length=500, null=True, blank=True)
     image = models.ImageField(upload_to='food_images/')
     created_at = models.DateTimeField(auto_now_add=True)
@@ -85,4 +86,4 @@ class OrderItem(models.Model):
     quantity = models.PositiveIntegerField()
 
     def __str__(self):
-        return str(self.menu_item)
+        return str(self.menu_item) + " - " + str(self.order)

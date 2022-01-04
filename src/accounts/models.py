@@ -12,7 +12,7 @@ class CustomUser(AbstractUser):
 
     email = models.EmailField()
     device = models.CharField(max_length=200, null=True, blank=True)
-    role = models.CharField(choices=Role.choices, max_length=20, default=Role.CUSTOMER)
+    role = models.CharField(choices=Role.choices, max_length=20, default=Role.SITE_ADMIN)
     addresses = models.ManyToManyField('Address', blank=True, through='UserAddress')
 
     def __str__(self):
@@ -20,10 +20,13 @@ class CustomUser(AbstractUser):
 
 
 class Customer(CustomUser):
-    #   we don't need to override save method for customer, because by default it is a normal user when created,
-    #   also the default value for role is set to "مشتری"
     class Meta:
         proxy = True
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.role = CustomUser.Role.CUSTOMER
+        return super().save(*args, **kwargs)
 
 
 class RestaurantManager(CustomUser):
@@ -61,3 +64,6 @@ class Address(models.Model):
 class UserAddress(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     address = models.ForeignKey(Address, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.user) + ' - ' + str(self.address)
