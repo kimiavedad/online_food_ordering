@@ -21,14 +21,6 @@ class FoodCreateView(CreateView):
     fields = '__all__'
     success_url = reverse_lazy('food_list')
 
-    def get_context_data(self, **kwargs):
-        print(super().get_context_data())
-        return super().get_context_data()
-    
-    def get_form(self, form_class=None):
-        print(super().get_form())
-        return super(FoodCreateView, self).get_form()
-
 
 class FoodUpdateView(UpdateView):
     model = Food
