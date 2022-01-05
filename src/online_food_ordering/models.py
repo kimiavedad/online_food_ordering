@@ -67,14 +67,14 @@ class MenuItem(models.Model):
 
 class Order(models.Model):
     STATUS_CHOICES = [
-        ('سفارش', 'سفارش'),
-        ('ثبت', 'ثبت'),
-        ('ارسال', 'ارسال'),
-        ('تحویل', 'تحویل'),
+        (0, 'سفارش'),
+        (1, 'ثبت'),
+        (2, 'ارسال'),
+        (3, 'تحویل'),
     ]
     user_address = models.ForeignKey('accounts.UserAddress', on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(choices=STATUS_CHOICES, max_length=10)
+    status = models.IntegerField(choices=STATUS_CHOICES,)
 
     def __str__(self):
         return "order" + str(self.id)
@@ -84,6 +84,7 @@ class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
     menu_item = models.ForeignKey(MenuItem, on_delete=models.CASCADE, related_name='orders')
     quantity = models.PositiveIntegerField()
+
 
     def __str__(self):
         return str(self.menu_item) + " - " + str(self.order)
