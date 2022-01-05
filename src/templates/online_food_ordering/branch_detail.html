@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h3>رستوران {{branch.restaurant.name}} {{branch.name}}</h3>
+<ul>
+{% for item in menuitem_list %}
+    <li>{{item.food.name}}</li>
+{% endfor %}
+</ul>
+{% endblock content %}

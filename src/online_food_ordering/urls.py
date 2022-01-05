@@ -3,5 +3,6 @@ from .views import *
 
 urlpatterns = [
     path('', homepage, name='home'),
-    path(r'login_success/$', login_success, name='login_success' )
+    path(r'login_success/$', login_success, name='login_success'),
+    path('restaurant/<int:pk>/', BranchDetailView.as_view(), name='branch_detail'),
 ]

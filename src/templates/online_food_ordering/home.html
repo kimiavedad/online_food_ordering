@@ -38,7 +38,7 @@
 <section class="pt-5 mt-5">
     <div class="container">
         <div class="mb-7 pb-3 text-center">
-            <h3 class="fs-xl-10 fs-lg-8 fs-7 fw-bold font-cursive text-capitalize">پرفروش ترین رستوران ها</h3>
+            <h3 class="fs-xl-10 fs-lg-8 fs-7 fw-bold font-cursive text-capitalize">پرفروش ترین رستوران ها (تهران)</h3>
             <h5><a href="#" class="text-decoration-none text-danger">رستوران‌های بیشتر</a></h5>
         </div>
 
@@ -48,18 +48,21 @@
                 <div class="card overflow-hidden shadow">
                     <div class="card-body py-4 px-3">
                         <div class="d-flex flex-column flex-lg-row justify-content-between mb-3">
-                            <h4 class="text-secondary fw-medium"><a class="link-900 text-decoration-none stretched-link"
-                                                                    href="#!">{{branch.restaurant.name}} {{branch.name}}</a></h4>
+                            <h4 class="text-secondary fw-medium">
+                                <a class="link-900 text-decoration-none stretched-link"
+                                   href="{% url 'branch_detail' branch.pk %}">{{branch.restaurant.name}} {{branch.name}}
+                                </a>
+                            </h4>
                         </div>
                     </div>
                 </div>
             </div>
-
             {% endfor %}
-
         </div>
     </div>
 </section>
+
+
 
 
 {% endblock content %}

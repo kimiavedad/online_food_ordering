@@ -84,6 +84,13 @@ class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
     menu_item = models.ForeignKey(MenuItem, on_delete=models.CASCADE, related_name='orders')
     quantity = models.PositiveIntegerField()
+    price = models.PositiveIntegerField(null=True, blank=True)
 
     def __str__(self):
-        return str(self.menu_item) + " - " + str(self.order)
+        return str(self.menu_item) + " - " + str(self.order) + "-" + str(self.price)
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.price = self.menu_item.price
+        return super().save(*args, **kwargs)
+

@@ -1,6 +1,7 @@
 from django.db.models import Sum
 from django.shortcuts import render
 from django.shortcuts import redirect
+from django.views.generic import ListView, DetailView
 from .models import *
 
 
@@ -27,3 +28,24 @@ def login_success(request):
     else:
         return redirect('home')
 
+
+class BranchDetailView(ListView):
+    model = MenuItem
+    template_name = "online_food_ordering/branch_detail.html"
+
+    def get_queryset(self):
+        return MenuItem.objects.filter(branch=self.kwargs['pk'])
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data()
+        context['branch'] = Branch.objects.get(pk=self.kwargs['pk'])
+        return context
+
+
+class Cart(DetailView):
+    model = Order
+    template_name = 'online_food_ordering/cart.html'
+
+    def get_queryset(self):
+        print(self.request)
+        return Order.objects.filter(user_address__user=self.request.user)
