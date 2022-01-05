@@ -1,11 +1,17 @@
+from django.db.models import Sum
 from django.shortcuts import render
 from django.shortcuts import redirect
+from .models import *
 
-
-# Create your views here.
 
 def homepage(request):
-    return render(request, 'online_food_ordering/home.html')
+    top_food_list = Food.objects.filter(menu__orders__order__status__gt=0).distinct().annotate(
+        total=Sum('menu__orders__quantity')).order_by('-total')[:10]
+    top_restaurant_list = Branch.objects.filter(menu__orders__order__status__gt=0).distinct().annotate(
+        total=Sum('menu__orders__quantity')).order_by('-total')[:10]
+
+    return render(request, 'online_food_ordering/home.html',
+                  context={'top_food_list': top_food_list, 'top_restaurant_list': top_restaurant_list})
 
 
 def login_success(request):
@@ -20,3 +26,4 @@ def login_success(request):
         return
     else:
         return redirect('home')
+

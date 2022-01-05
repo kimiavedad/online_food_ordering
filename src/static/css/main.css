@@ -3,3 +3,10 @@
 body {
     font-family: "Sahel", sans-serif, Arial;
 }
+
+.food-img {
+    height:170px;
+    width:200px;/*maintain aspect ratio*/
+    max-width:500px;
+
+}

@@ -74,7 +74,7 @@ class Order(models.Model):
     ]
     user_address = models.ForeignKey('accounts.UserAddress', on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    status = models.IntegerField(choices=STATUS_CHOICES,)
+    status = models.IntegerField(choices=STATUS_CHOICES, )
 
     def __str__(self):
         return "order" + str(self.id)
@@ -84,7 +84,6 @@ class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
     menu_item = models.ForeignKey(MenuItem, on_delete=models.CASCADE, related_name='orders')
     quantity = models.PositiveIntegerField()
-
 
     def __str__(self):
         return str(self.menu_item) + " - " + str(self.order)

@@ -10,6 +10,56 @@
     <h3 class="text-center"><strong>از بهترین رستوران ها آنلاین غذا سفارش دهید</strong></h3>
 </div>
 
-{% comment %} اینجا پرفروشترین غذاها و اینا را میذاریم {% endcomment %}
+<section class="pt-5 mt-4">
+    <div class="container">
+        <div class="mb-7 pb-3 text-center">
+            <h3 class="fs-xl-10 fs-lg-8 fs-7 fw-bold font-cursive text-capitalize">محبوب ترین غذاها</h3>
+            <h5><a href="#" class="text-decoration-none text-danger">غذاهای بیشتر</a></h5>
+        </div>
+
+        <div class="row">
+            {% for food in top_food_list %}
+            <div class="col-lg-3 col-sm-6 mb-4">
+                <a href="" class="text-decoration-none text-dark">
+                    <div class="card h-100">
+                        <img src="{{food.image.url}}" class="card-img-top" alt="{{food.name}}"
+                             style="height:170px; width:auto; max-width:500px;">
+                        <div class="card-body">
+                            <h5 class="card-title">{{food.name}}</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="pt-5 mt-5">
+    <div class="container">
+        <div class="mb-7 pb-3 text-center">
+            <h3 class="fs-xl-10 fs-lg-8 fs-7 fw-bold font-cursive text-capitalize">پرفروش ترین رستوران ها</h3>
+            <h5><a href="#" class="text-decoration-none text-danger">رستوران‌های بیشتر</a></h5>
+        </div>
+
+        <div class="row">
+            {% for branch in top_restaurant_list %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card overflow-hidden shadow">
+                    <div class="card-body py-4 px-3">
+                        <div class="d-flex flex-column flex-lg-row justify-content-between mb-3">
+                            <h4 class="text-secondary fw-medium"><a class="link-900 text-decoration-none stretched-link"
+                                                                    href="#!">{{branch.restaurant.name}} {{branch.name}}</a></h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% endfor %}
+
+        </div>
+    </div>
+</section>
+
 
 {% endblock content %}
