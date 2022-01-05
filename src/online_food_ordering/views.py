@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.views.generic import ListView, DetailView
 from .models import *
+from accounts.models import Customer
 
 
 def homepage(request):
@@ -42,10 +43,12 @@ class BranchDetailView(ListView):
         return context
 
 
-class Cart(DetailView):
-    model = Order
-    template_name = 'online_food_ordering/cart.html'
-
-    def get_queryset(self):
-        print(self.request)
-        return Order.objects.filter(user_address__user=self.request.user)
+def cart(request):
+    try:
+        customer = request.user
+    except Exception:
+        device = request.COOKIES['device']
+        customer, created = Customer.objects.get_or_create(device=device)
+    order, created = Order.objects.get_or_create(user_address__user=customer, status=0)
+    print(order.__dict__)
+    return render(request, 'online_food_ordering/cart.html', {'order': order})
