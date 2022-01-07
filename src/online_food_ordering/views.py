@@ -2,6 +2,8 @@ from django.db.models import Sum
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.views.generic import ListView, DetailView
+from django.http.response import JsonResponse
+
 from .models import *
 from accounts.models import Customer
 
@@ -46,9 +48,46 @@ class BranchDetailView(ListView):
 def cart(request):
     try:
         customer = request.user
+        # user_address = UserAddress.objects.
     except Exception:
+        print(request.COOKIES['device'])
         device = request.COOKIES['device']
         customer, created = Customer.objects.get_or_create(device=device)
-    order, created = Order.objects.get_or_create(user_address__user=customer, status=0)
+
+    # order, created = Order.objects.get_or_create(customer=customer, status=0)
     print(order.__dict__)
     return render(request, 'online_food_ordering/cart.html', {'order': order})
+
+
+class FoodDetailView(DetailView):
+    model = MenuItem
+    template_name = "online_food_ordering/food_detail.html"
+
+    def post(self, request, *args, **kwargs):
+        menu_item = MenuItem.objects.get(pk=self.kwargs['pk'])
+        try:
+            customer = request.user
+        except:
+            device = request.COOKIES['device']
+            customer, created = Customer.objects.get_or_create(device=device)
+        print(customer)
+        order, created = Order.objects.get_or_create(user_address__user=customer, status=0)
+        order_item, created = OrderItem.objects.get_or_create(order=order, menu_item=menu_item)
+        order_item.quantity = request.POST['quantity']
+        order_item.save()
+        return redirect('cart')
+
+# def update_order(request):
+#     if request.method == "POST" and request.is_ajax():
+#         try:
+#             customer = request.user.customer
+#         except:
+#             device = request.COOKIES['device']
+#             customer, created = Customer.objects.get_or_create(device=device)
+#
+#         order, created = Order.objects.get_or_create(customer=customer, complete=False)
+#         orderItem, created = OrderItem.objects.get_or_create(order=order, product=product)
+#         orderItem.quantity = request.POST['quantity']
+#         orderItem.save()
+#         return JsonResponse({})
+#     return JsonResponse({})

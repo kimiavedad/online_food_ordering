@@ -47,7 +47,7 @@ class Branch(models.Model):
     manager = models.OneToOneField('accounts.RestaurantManager', on_delete=models.CASCADE)
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='branches')
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='branches')
-    address = models.OneToOneField('accounts.Address', on_delete=models.CASCADE)
+    address = models.CharField(max_length=500, null=True)
     name = models.CharField(max_length=100)
     description = models.TextField(max_length=500, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -81,7 +81,8 @@ class Order(models.Model):
         (2, 'ارسال'),
         (3, 'تحویل'),
     ]
-    user_address = models.ForeignKey('accounts.UserAddress', on_delete=models.SET_NULL, null=True)
+    customer = models.ForeignKey('accounts.Customer', on_delete=models.SET_NULL, null=True)
+    address = models.ForeignKey('accounts.Address', on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     status = models.IntegerField(choices=STATUS_CHOICES, )
 
@@ -92,6 +93,18 @@ class Order(models.Model):
     def date_jalali(self):
         return jdatetime.datetime.fromgregorian(datetime=self.created_at)
 
+    @property
+    def total_price(self):
+        order_items = self.items.all()
+        total_price = sum([item.total for item in order_items])
+        return total_price
+
+    @property
+    def number_of_items(self):
+        order_items = self.items.all()
+        number_of_items = sum([item.quantity for item in order_items])
+        return number_of_items
+
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
@@ -101,6 +114,10 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return str(self.menu_item) + " - " + str(self.order) + "-" + str(self.price)
+
+    @property
+    def total(self):
+        return self.price * self.quantity
 
     def save(self, *args, **kwargs):
         if not self.pk:

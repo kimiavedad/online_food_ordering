@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="pt-5 mt-4">
+    <div class="container">
+        <div class="article-entry">
+            <h2>{{ object.food.name }}</h2>
+            <img class="img-thumbnail" style="height:170px; width:auto; max-width:500px;" src="{{object.food.image.url}}">
+            <p> قیمت:{{ object.price }} تومان</p>
+            <form method="POST" action="{% url 'food_detail' object.id %}">
+                {% csrf_token %}
+                <input min="1" value=1 type="number" name="quantity">
+                <input class="btn btn-dark" type="submit" value="Add to Cart">
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock content %}

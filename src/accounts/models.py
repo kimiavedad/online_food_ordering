@@ -13,7 +13,6 @@ class CustomUser(AbstractUser):
     email = models.EmailField()
     device = models.CharField(max_length=200, null=True, blank=True)
     role = models.CharField(choices=Role.choices, max_length=20, default=Role.SITE_ADMIN)
-    addresses = models.ManyToManyField('Address', blank=True, through='UserAddress')
 
     def __str__(self):
         return self.email
@@ -52,6 +51,7 @@ class SiteAdmin(CustomUser):
 
 
 class Address(models.Model):
+    customer = models.ForeignKey('Customer', on_delete=models.CASCADE, null=True, related_name='addresses')
     city = models.CharField(max_length=100)
     street = models.CharField(max_length=500)
     plaque = models.PositiveIntegerField()
@@ -59,11 +59,3 @@ class Address(models.Model):
 
     def __str__(self):
         return self.city + " - " + self.street
-
-
-class UserAddress(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    address = models.ForeignKey(Address, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return str(self.user) + ' - ' + str(self.address)

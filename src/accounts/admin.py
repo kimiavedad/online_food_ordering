@@ -9,7 +9,7 @@ CustomUser = get_user_model()
 
 
 class AddressInline(admin.TabularInline):
-    model = Customer.addresses.through
+    model = Address
 
 
 @admin.register(CustomUser)
