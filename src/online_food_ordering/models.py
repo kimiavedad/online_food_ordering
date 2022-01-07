@@ -47,7 +47,7 @@ class Branch(models.Model):
     manager = models.OneToOneField('accounts.RestaurantManager', on_delete=models.CASCADE)
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='branches')
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='branches')
-    address = models.CharField(max_length=500, null=True)
+    address = models.CharField(max_length=500)
     name = models.CharField(max_length=100)
     description = models.TextField(max_length=500, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -110,7 +110,7 @@ class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
     menu_item = models.ForeignKey(MenuItem, on_delete=models.CASCADE, related_name='orders')
     quantity = models.PositiveIntegerField()
-    price = models.PositiveIntegerField(null=True, blank=True)
+    price = models.PositiveIntegerField(blank=True)
 
     def __str__(self):
         return str(self.menu_item) + " - " + str(self.order) + "-" + str(self.price)

@@ -51,11 +51,11 @@ class SiteAdmin(CustomUser):
 
 
 class Address(models.Model):
-    customer = models.ForeignKey('Customer', on_delete=models.CASCADE, null=True, related_name='addresses')
+    customer = models.ForeignKey('Customer', on_delete=models.CASCADE, related_name='addresses')
     city = models.CharField(max_length=100)
     street = models.CharField(max_length=500)
     plaque = models.PositiveIntegerField()
-    primary = models.BooleanField(null=True)
+    primary = models.BooleanField()
 
     def __str__(self):
         return self.city + " - " + self.street
