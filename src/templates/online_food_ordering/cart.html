@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-{% if order != None and len(order) != 0%}
+{% if order != None%}
 <div class="row">
     <div class="col-lg-12">
         <div class="box-element">
@@ -13,11 +13,11 @@
                     <th><h5>Total:<strong> ${{order.total_price}}</strong></h5></th>
                     <th>
                         <a style="float:right; margin:5px;" class="btn btn-success"
-                           href="{% url 'checkout' %}">ثبت</a>
+                           href="">ثبت</a>
                     </th>
                     <th>
                         <a style="float:right; margin:5px;" class="btn btn-success"
-                           href="{% url 'checkout' %}">حذف سبد خرید</a>
+                           href="">حذف سبد خرید</a>
                     </th>
                 </tr>
             </table>

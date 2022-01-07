@@ -109,7 +109,7 @@ class Order(models.Model):
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
     menu_item = models.ForeignKey(MenuItem, on_delete=models.CASCADE, related_name='orders')
-    quantity = models.PositiveIntegerField()
+    quantity = models.PositiveIntegerField(null=True, blank=True)
     price = models.PositiveIntegerField(blank=True)
 
     def __str__(self):
@@ -123,3 +123,6 @@ class OrderItem(models.Model):
         if not self.pk:
             self.price = self.menu_item.price
         return super().save(*args, **kwargs)
+
+    def is_same_restaurant(self, branch):
+        return self.menu_item.branch == branch

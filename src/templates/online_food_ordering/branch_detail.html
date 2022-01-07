@@ -3,21 +3,31 @@
 {% block content %}
 <section class="pt-5 mt-4">
     <div class="container">
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li
+                    {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
         <h3 class="pb-3">رستوران {{branch.restaurant.name}} {{branch.name}}</h3>
         <div class="row">
             {% for item in menuitem_list %}
             <div class="col-lg-3 col-sm-6 mb-4">
-                <div class="card h-100 shadow" >
+                <div class="card h-100 shadow">
                     <img class="card-img-top" src="{{item.food.image.url}}" alt="{{item.food.name}}"
                          style="height:170px; width:auto; max-width:500px;">
                     <div class="card-body">
                         <h5 class="card-title">{{item.food.name}}</h5>
                         <p class="card-text text-secondary">{{item.food.description}}</p>
                         <p class="card-text">{{item.price}}تومان</p>
-<!--                        <button data-item="{{item.id}}" data-action="add" class="add-btn m-2 btn btn-primary position-absolute bottom-0 end-0">-->
-<!--                            افزودن-->
-<!--                        </button>-->
-                        <a href="{% url 'food_detail' item.pk %}" class="m-2 btn btn-primary position-absolute bottom-0 end-0">افزودن</a>
+                        <!--                        <button data-item="{{item.id}}" data-action="add" class="add-btn m-2 btn btn-primary position-absolute bottom-0 end-0">-->
+                        <!--                            افزودن-->
+                        <!--                        </button>-->
+                        <a href="{% url 'food_detail' item.pk %}"
+                           class="m-2 btn btn-primary position-absolute bottom-0 end-0">افزودن</a>
 
                     </div>
                 </div>
