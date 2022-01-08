@@ -69,19 +69,20 @@ class FoodDetailView(DetailView):
     template_name = "online_food_ordering/food_detail.html"
 
     def post(self, request, *args, **kwargs):
-        obj = self.get_object()
-        print(obj.branch)
-        menu_item = MenuItem.objects.get(pk=self.kwargs['pk'])
+        menu_item = self.get_object()
         if request.user.is_authenticated:
             customer = request.user
         else:
             device = request.COOKIES['device']
-            customer, bool_created = Customer.objects.get_or_create(device=device)
+            customer, bool_created = Customer.objects.get_or_create(device=device, username=device)
+
+        if int(request.POST.get('quantity')) > menu_item.stock:
+            messages.error(request, "تعداد انتخابی بیشتر از موجودی رستوران است.")
+            return redirect(reverse('branch_detail', kwargs={'pk': menu_item.branch.pk}))
 
         if Order.objects.filter(customer=customer, status=0).exists():
             order = Order.objects.get(customer=customer, status=0)
-            print(order.items.all())
-            if not order.items.all()[0].is_same_restaurant(menu_item.branch):
+            if not order.items.first().is_same_restaurant(menu_item.branch):
                 order.items.all().delete()
                 messages.info(request, "سبد خرید قبلی شما پاک شد!")
         else:
@@ -89,8 +90,8 @@ class FoodDetailView(DetailView):
         order_item, bool_created = OrderItem.objects.get_or_create(order=order, menu_item=menu_item)
         order_item.quantity = request.POST['quantity']
         order_item.save()
-        messages.success(request, f"{obj.food.name} به سبد خرید اضافه شد.")
-        return redirect(reverse('branch_detail', kwargs={'pk': obj.branch.pk}))
+        messages.success(request, f"{menu_item.food.name} به سبد خرید اضافه شد.")
+        return redirect(reverse('branch_detail', kwargs={'pk': menu_item.branch.pk}))
 
 
 def update_order(request):
