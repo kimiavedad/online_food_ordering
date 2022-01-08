@@ -55,14 +55,12 @@ def cart(request):
     if request.user.is_authenticated:
         customer = request.user
     else:
-        print(request.COOKIES['device'])
         device = request.COOKIES['device']
         customer, created = Customer.objects.get_or_create(device=device)
 
     order = None
     if Order.objects.filter(customer=customer, status=0).exists():
         order = Order.objects.get(customer=customer, status=0)
-
     return render(request, 'online_food_ordering/cart.html', {'order': order})
 
 

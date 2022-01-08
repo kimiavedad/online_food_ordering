@@ -46,8 +46,6 @@
         {% else %}
         <h1 class="text-center p-4">سبد خرید شما خالیست!</h1>
         {% endif %}
-
-
     </div>
 </section>
 {% endblock content %}
@@ -55,10 +53,6 @@
 <script>
     var CSRF_TOKEN = '{{ csrf_token }}';
     var URL = {% url 'update_order' %}
-
-
-
-
 </script>
 <script src="{% static 'js/delete_cart.js' %}"></script>
 {% endblock script %}
