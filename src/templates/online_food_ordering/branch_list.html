@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Home{% endblock title %}
+
+
+{% block content %}
+<section class="pt-5 mt-4">
+    <div class="container">
+        <div class="mb-7 pb-3 text-center">
+            <h3 class="fs-xl-10 fs-lg-8 fs-7 fw-bold font-cursive text-capitalize">همه رستوران ها (تهران)</h3>
+        </div>
+
+        <div class="row">
+            {% for branch in branch_list %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card overflow-hidden shadow">
+                    <div class="card-body py-4 px-3">
+                        <div class="d-flex flex-column flex-lg-row justify-content-between mb-3">
+                            <h4 class="text-secondary fw-medium">
+                                <a class="link-900 text-decoration-none stretched-link"
+                                   href="{% url 'branch_detail' branch.pk %}">
+                                    {% if branch.primary %}
+                                    {{branch}} (شعبه اصلی)
+                                    {% else %}
+                                    {{branch}}
+                                    {% endif %}
+                                </a>
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock content %}

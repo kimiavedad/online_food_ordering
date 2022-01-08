@@ -9,8 +9,8 @@
             <p> قیمت:{{ object.price }} تومان</p>
             <form method="POST" action="">
                 {% csrf_token %}
-                <input min="1" value=1 type="number" name="quantity">
-                <input class="btn btn-dark" type="submit" value="Add to Cart">
+                <input min="1" value=1 type="number" name="quantity" placeholder="تعداد...">
+                <input class="btn btn-dark" type="submit" value="اضافه به سبد خرید">
             </form>
         </div>
     </div>

@@ -2,7 +2,7 @@ from django.db.models import Sum
 from django.shortcuts import render
 from django.shortcuts import redirect, reverse
 from django.views.generic import ListView, DetailView
-from django.http.response import HttpResponseRedirect
+from django.http.response import JsonResponse
 from django.contrib import messages
 from .models import *
 from accounts.models import Customer
@@ -16,6 +16,11 @@ def homepage(request):
 
     return render(request, 'online_food_ordering/home.html',
                   context={'top_food_list': top_food_list, 'top_restaurant_list': top_restaurant_list})
+
+
+class BranchListView(ListView):
+    model = Branch
+    template_name = "online_food_ordering/branch_list.html"
 
 
 def login_success(request):
@@ -46,6 +51,7 @@ class BranchDetailView(ListView):
 
 
 def cart(request):
+
     if request.user.is_authenticated:
         customer = request.user
     else:
@@ -56,6 +62,7 @@ def cart(request):
     order = None
     if Order.objects.filter(customer=customer, status=0).exists():
         order = Order.objects.get(customer=customer, status=0)
+
     return render(request, 'online_food_ordering/cart.html', {'order': order})
 
 
@@ -87,17 +94,22 @@ class FoodDetailView(DetailView):
         messages.success(request, f"{obj.food.name} به سبد خرید اضافه شد.")
         return redirect(reverse('branch_detail', kwargs={'pk': obj.branch.pk}))
 
-# def update_order(request):
-#     if request.method == "POST" and request.is_ajax():
-#         try:
-#             customer = request.user.customer
-#         except:
-#             device = request.COOKIES['device']
-#             customer, created = Customer.objects.get_or_create(device=device)
-#
-#         order, created = Order.objects.get_or_create(customer=customer, complete=False)
-#         orderItem, created = OrderItem.objects.get_or_create(order=order, product=product)
-#         orderItem.quantity = request.POST['quantity']
-#         orderItem.save()
-#         return JsonResponse({})
-#     return JsonResponse({})
+
+def update_order(request):
+    if request.method == "POST" and request.is_ajax():
+        if request.user.is_authenticated:
+            customer = request.user
+        else:
+            device = request.COOKIES['device']
+            customer, bool_created = Customer.objects.get_or_create(device=device)
+
+        order_item = request.POST.get('order_item')
+        print(order_item)
+
+        order = Order.objects.get(customer=customer, status=0)
+        print(order.items.all()[int(order_item)])
+        order.items.all()[int(order_item)].delete()
+        if not order.items.all():
+            order.delete()
+        return JsonResponse({})
+    return JsonResponse({})
