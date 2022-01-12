@@ -1,0 +1,69 @@
+{% extends 'restaurant_manager/restaurant_manager_panel.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container p-3">
+    {% if not  object_list %}
+    <div class="row my-3 mx-auto w-50 justify-content-center">
+        <div class="row">
+            <p class="h3 text-center text-light my-5">
+                <strong>
+                    سفارشی پیدا نشد!
+                </strong>
+            </p>
+        </div>
+    </div>
+    {% else %}
+    <div class="row my-5">
+    </div>
+    <div class="row my-5">
+        <ol class="list-group list-group-numbered">
+            {% for order in object_list %}
+            <li class="list-group-item d-flex my-2 text-light"
+                style="background-color: #0c79a0;">
+                <div class="col-3">
+                    مشتری: {{ order.customer.email }}
+                </div>
+                <div class="col-3">
+                    {% if order.status == 1 %}
+                        وضعیت: ثبت
+                    {% elif order.status == 2 %}
+                        وضعیت: ارسال
+                    {% else %}
+                        وضعیت: تحویل
+                    {% endif %}
+                </div>
+                <div class="col-3">
+                    {{ order.date_jalali }}
+                </div>
+                <div class="col-3">
+                    <select class="form-select-sm sopt" aria-label="Cart Status">
+                        {% if order.status == 1 %}
+                        <option selected>ثبت</option>
+                        <option value="confirmed">ارسال</option>
+                        <option value="cancelled">تحویل</option>
+                    {% elif order.status == 2 %}
+                    <option selected>ارسال</option>
+
+                    <option value="paid">تحویل</option>
+
+                    {% else %}
+                    <option selected>تحویل</option>
+
+                    {% endif %}
+                    </select>
+                </div>
+            </li>
+            {% endfor %}
+        </ol>
+    </div>
+    {% endif %}
+</div>
+{% endblock content %}
+{% block script %}
+<script>
+    var URL = {% url 'orders' %}
+    var CSRF_TOKEN = {{csrf_token}}
+</script>
+<script src={% static 'js/change_status.js' %}></script>
+{% endblock script %}

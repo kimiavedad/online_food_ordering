@@ -1,7 +1,7 @@
 from django.db.models import Sum
 from django.shortcuts import render
 from django.shortcuts import redirect, reverse
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, TemplateView
 from django.http.response import JsonResponse
 from django.contrib import messages
 from .models import *
@@ -32,7 +32,7 @@ def login_success(request):
         return redirect("admin_panel")
     elif request.user.role == 'مدیر رستوران':
         # return redirect("other_view")
-        return
+        return redirect("restaurant_manager_panel")
     else:
         return redirect('home')
 
@@ -112,3 +112,7 @@ def update_order(request):
             order.delete()
         return JsonResponse({})
     return JsonResponse({})
+
+
+class CustomerPanel(TemplateView):
+    pass
