@@ -1,0 +1,35 @@
+{% extends 'restaurant_manager/restaurant_manager_panel.html' %}
+
+{% block content %}
+<div class="container p-3">
+    <div class="d-flex justify-content-between">
+        <div class="p-2"><h3>رستوران {{request.user.branch}} </h3></div>
+        <div class="p-2"><a href="{% url 'menuitem_create' %}">افزودن غذای جدید به منو</a></div>
+
+    </div>
+
+    {% for item in menuitem_list %}
+
+    <div class="card">
+        <div class="card-header">
+            <img class="rounded img-thumbnail" src="{{item.food.image.url}}" alt="{{item.food.image}}"
+                 style="height:170px; width:200px; max-width:500px;">
+            <span class="font-weight-bold">{{ item.food.name }}</span>
+            <span class="text-muted">{{ item.food.meals.all|join:" و " }} | {{ food.category }}</span>
+            <span class="text-muted pe-2"> موجودی: {{ item.stock }} </span>
+            <span class="text-muted"> قیمت: {{ item.price }} </span>
+        </div>
+        <div class="card-body">
+            {{ item.food.description }}
+        </div>
+        <div class="card-footer text-center text-muted">
+            <a href="{% url 'menuitem_edit' item.pk %}">ویرایش</a> |
+            <form method="POST" action='{% url "menuitem_delete" item.pk %}'>
+            {% csrf_token %}<input type="submit" value="حذف">
+            </form>
+        </div>
+    </div>
+    <br>
+    {% endfor %}
+</div>
+{% endblock content %}

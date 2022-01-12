@@ -87,7 +87,7 @@ class Order(models.Model):
     status = models.IntegerField(choices=STATUS_CHOICES, )
 
     def __str__(self):
-        return "order" + str(self.id)
+        return f"{self.customer} | {self.status}"
 
     @property
     def date_jalali(self):
