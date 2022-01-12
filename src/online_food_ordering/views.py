@@ -31,10 +31,9 @@ def login_success(request):
         # user is an admin
         return redirect("admin_panel")
     elif request.user.role == 'مدیر رستوران':
-        # return redirect("other_view")
         return redirect("restaurant_manager_panel")
     else:
-        return redirect('home')
+        return redirect("customer_panel")
 
 
 class BranchDetailView(ListView):

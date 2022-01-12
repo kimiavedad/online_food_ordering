@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 
-{% block navbar %}
+{% comment %} {% block navbar %}
 <div class="container-fluid">
     <a class="navbar-brand" href="{% url 'home' %}">Foodie</a>
 
@@ -25,14 +25,13 @@
         </li>
     </ul>
 </div>
-{% endblock navbar %}
+{% endblock navbar %} {% endcomment %}
 
 {% block content %}
 <div class="container p-3">
-    <h1 class="mb-4">پنل رستوران</h1>
-
+    <h1 class="mb-4">پنل کاربری</h1>
     <ul>
-        <li><a href="{% url 'menu' %}">منوی رستوران</a></li>
+        <li><a href="{% url 'menu' %}">ویرایش اطلاعات</a></li>
         <li><a href="{% url 'orders' %}">تاریخچه سفارش ها</a></li>
     </ul>
 </div>
