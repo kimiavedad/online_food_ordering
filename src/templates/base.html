@@ -26,6 +26,42 @@
 <body>
 
 <header>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">نتایج جستجو</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <a href="">
+                        <h5>قرمه سبزی</h5>
+                        <div class="row">
+                            <div class="col">رستوران نایب</div>
+                            <div class="col">65000 تومان</div>
+                        </div>
+                    </a>
+
+
+                    <hr>
+                    <a href=""></a>
+                    <h5>قرمه سبزی</h5>
+                    <div class="row">
+                        <div class="col">رستوران نایب</div>
+                        <div class="col">65000 تومان</div>
+                    </div>
+
+                    <hr>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div style="margin-bottom:53px;">
         <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
             {% block navbar %}
@@ -80,9 +116,12 @@
                     </div>
                     {% endif %}
                     <form class="d-flex">
-                        <input class="form-control me-2" type="search" placeholder="رستوران، غذا..."
+                        <input class="form-control me-2" type="text" id="search-input" placeholder="رستوران، غذا..."
                                aria-label="Search">
-                        <button class="btn btn-danger text-light" type="submit">جستجو</button>
+                        <button id="search-btn" type="button" class="btn btn-danger text-light"
+                                data-bs-target="#exampleModal"
+                                data-bs-whatever="@getbootstrap">جستجو
+                        </button>
                     </form>
                 </div>
             </div>
@@ -101,7 +140,13 @@
         integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer">
 </script>
+<script>
+    var URL_SEARCH = "{% url 'search' %}";
+    var CSRF_TOKEN = '{{ csrf_token }}';
 
+
+</script>
+<script src="{% static 'js/search.js'%}"></script>
 {% block script %} {% endblock script %}
 
 </body>

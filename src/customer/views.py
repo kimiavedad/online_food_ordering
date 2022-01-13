@@ -2,7 +2,7 @@ from collections import defaultdict
 
 from django.shortcuts import render
 from django.views.generic import TemplateView, ListView, View
-from online_food_ordering.models import Order
+from online_food_ordering.models import Order, MenuItem, Restaurant
 from accounts.models import Customer, Address
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import redirect
@@ -29,7 +29,6 @@ class CustomerUpdate(TemplateView):
     template_name = "customer/customer_edit.html"
 
     def post(self, request):
-        print()
         address = defaultdict(dict)
         request_items = list(request.POST.items())[1:].copy()
         for k, v in request_items:
@@ -45,25 +44,33 @@ class CustomerUpdate(TemplateView):
         print(request.user.addresses.all())
         return JsonResponse({'message': 'تغییرات با موفقیت ذخیره شد!'})
 
-# def update_customer(request):
-#     # AddressInlineFormSet = inlineformset_factory(Customer, Address, exclude=('customer',), extra=1)
-#     customer = request.user
-#     if request.method == 'POST':
-#         print('yes')
-#         # formset = AddressInlineFormSet(request.POST, instance=customer)
-#         # print(formset.is_valid())
-#         # print(formset)
-#         # if formset.is_valid():
-#         #     objects = formset.save()
-#         #     print(objects)
-#         # Do something. Should generally end with a redirect. For example:
-#
-#         return redirect('customer_panel')
-#         # return HttpResponseRedirect('customer_panel')
-#
-#         # formset = AddressInlineFormSet(instance=customer)
-#     return render(request, "customer/customer_edit.html", {'address_list': customer.addresses.all()})
 
+def search(request):
+    if request.method == "POST" and request.is_ajax():
+        searched_content = request.POST.get('searched_content')
+
+        queryset = MenuItem.objects.filter(food__name__contains=searched_content)
+        if queryset:
+            print("food")
+            return JsonResponse({
+                "type": "food",
+                "object_list":
+                    list(queryset.values('pk', 'food__name', 'branch__name', 'branch__restaurant__name', 'price'))
+            })
+
+        queryset = Restaurant.objects.filter(name__contains=searched_content)
+        if queryset:
+            object_list = []
+            for res in queryset:
+                object_list += list(res.branches.values('pk', 'name', 'restaurant__name', 'primary'))
+            return JsonResponse({
+                "type": "restaurant",
+                "object_list": object_list
+            })
+        
+        else:
+            return JsonResponse({'message': 'نتیجه ای پیدا نشد:('})
+    return JsonResponse({})
 
 # class Checkout(View):
 #     pass
