@@ -8,5 +8,15 @@ body {
     height:170px;
     width:200px;/*maintain aspect ratio*/
     max-width:500px;
+}
+ol {
+  list-style-type: none;
+  counter-reset: elementcounter;
+  padding-left: 0;
+}
 
+.li-address:before {
+  content: " آدرس " counter(elementcounter) ;
+  counter-increment: elementcounter;
+  font-weight: bold;
 }

@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container p-3">
+    <h1 class="pb-3">اطلاعات کاربری</h1>
+    <div class="d-flex justify-content-between">
+        <div class="ps-4 ms-1 pb-3"><strong class="pe-2">ایمیل: </strong> {{request.user.email}}</div>
+
+        <button type="button" class="btn text-primary text-decoration-none btn-link shadow-none" data-bs-toggle="modal"
+                data-bs-target="#exampleModal"
+                data-bs-whatever="@mdo">
+            <i class="fas fa-plus me-2"></i>افزودن آدرس جدید
+        </button>
+
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">آدرس جدید</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="form-address">
+                            <div class="mb-3">
+                                <label for="city" class="col-form-label">شهر: </label>
+                                <input type="text" class="form-control" id="city">
+                            </div>
+                            <div class="mb-3">
+                                <label for="street" class="col-form-label">خیابان: </label>
+                                <input type="text" class="form-control" id="street" maxlength="100">
+                            </div>
+                            <div class="mb-3">
+                                <label for="plaque" class="col-form-label">پلاک: </label>
+                                <input type="number" class="form-control" id="plaque">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="add-address btn btn-primary">افزودن</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <form id="form-info" class="form-group" action="" method="post" enctype="multipart/form-data">{% csrf_token %}
+        <div>
+            <ol>
+                {% for address in request.user.addresses.all %}
+                <li class="li-address">
+                    <div class="address row py-3">
+                        <div class="col-lg-3 pt-1 p-lg-0 col-12">
+                            <label for="city-value">شهر:</label>
+                            <input name="address[{{forloop.counter}}].city" id="city-value" type="text"
+                                   value="{{ address.city }}">
+                        </div>
+
+                        <div class="col-lg-3 pt-1 p-lg-0 col-12">
+
+                            <label for="street-value">خیابان: </label>
+                            <input name="address[{{forloop.counter}}].street" id="street-value" type="text"
+                                   value=" {{ address.street }}">
+                        </div>
+                        <div class="col-lg-3 pt-1 p-lg-0 col-12">
+                            <label for="plaque-value">پلاک: </label>
+                            <input name="address[{{forloop.counter}}].plaque" id="plaque-value" type="text"
+                                   value="{{ address.plaque }}">
+                        </div>
+                        <div class="col-6 pt-1 p-lg-0 col-lg-3 my-auto">
+                            <button class="delete-btn btn btn-outline-danger">حذف</button>
+                        </div>
+                    </div>
+                </li>
+                {% endfor %}
+            </ol>
+            <button class="btn btn-primary" id='save-btn' type="submit">ذخیره تغییرات</button>
+        </div>
+    </form>
+
+
+</div>
+{% endblock content %}
+{% block script %}
+<script>
+    var CSRF_TOKEN = '{{ csrf_token }}';
+    var URL = "{% url 'customer_edit' %}"
+
+
+
+
+
+</script>
+<script src="{% static 'js/customer_edit.js' %}"></script>
+{% endblock script %}

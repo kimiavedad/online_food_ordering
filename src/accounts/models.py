@@ -55,7 +55,7 @@ class Address(models.Model):
     city = models.CharField(max_length=100)
     street = models.CharField(max_length=500)
     plaque = models.PositiveIntegerField()
-    primary = models.BooleanField()
+    primary = models.BooleanField(default=False)
 
     def __str__(self):
         return self.city + " - " + self.street

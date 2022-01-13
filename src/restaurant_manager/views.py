@@ -62,5 +62,4 @@ class MenuItemCreateView(CreateView):
 
     def form_valid(self, form):
         form.instance.branch = self.request.user.branch
-        print(form.__dict__)
         return super(MenuItemCreateView, self).form_valid(form)

@@ -35,7 +35,7 @@
                     {% endif %}
                 </div>
                 <div class="col-3">
-                    {{ order.date_jalali }}
+                    {{ order.date_jalali | date:"H:i Y/m/d"}}
                 </div>
                 <div class="col-3">
                     <select class="form-select-sm sopt" aria-label="Cart Status">
