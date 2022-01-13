@@ -53,3 +53,4 @@ class CategoryDetailView(ListView):
 
     def get_queryset(self):
         return Food.objects.filter(category=self.kwargs['pk'])
+

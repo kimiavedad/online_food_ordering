@@ -16,18 +16,25 @@ $(document).ready(function () {
     
     function show_items(data){
         $(".modal-body").empty()
+        console.log(data['object_list'])
         if (data['object_list']){
             for (const [key, value] of Object.entries(data['object_list'])) {
+                console.log(value)
                 if (data['type']=='food') {
                     $(".modal-body").append(`
                     <a class="text-decoration-none" href="http://127.0.0.1:8000/food/${value['pk']}/">
                         <h5>${value['food__name']}</h5>
                     </a>
                     <div class="row">
-                        <div class="col"> رستوران ${value['branch__restaurant__name']} ${value['branch__name']}</div>
-                        <div class="col">${value['price']} تومان</div>
+                        <div class="col text-muted"> رستوران ${value['branch__restaurant__name']} ${value['branch__name']}</div>
                     </div>
                     <hr>`)
+                    console.log(USER_IS_ADMIN)
+                    if (USER_IS_ADMIN) {
+
+                        tag_a = $(".modal-body").children("a").last()
+                        $(tag_a).attr('href', `http:/\/127.0.0.1:8000/site_admin/food/${value['pk']}/edit/`)
+                    }
                 }
                 else {
                     $(".modal-body").append(`

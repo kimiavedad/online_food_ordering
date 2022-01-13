@@ -14,6 +14,4 @@ urlpatterns = [
     path('food/<int:pk>', FoodDetailView.as_view(), name='food_detail'),
 
     path('customer_panel/', CustomerPanel.as_view(), name='admin_panel'),
-
-
 ]

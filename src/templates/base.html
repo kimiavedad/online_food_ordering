@@ -143,8 +143,7 @@
 <script>
     var URL_SEARCH = "{% url 'search' %}";
     var CSRF_TOKEN = '{{ csrf_token }}';
-
-
+    var USER_IS_ADMIN = '{{request.user.is_superuser}}'
 </script>
 <script src="{% static 'js/search.js'%}"></script>
 {% block script %} {% endblock script %}

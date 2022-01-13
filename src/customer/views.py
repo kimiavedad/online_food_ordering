@@ -21,7 +21,6 @@ class OrderListView(ListView):
 
     def get_queryset(self):
         self.queryset = Order.objects.filter(customer=self.request.user, status__gt=0)
-        print(self.queryset)
         return self.queryset
 
 
@@ -37,21 +36,17 @@ class CustomerUpdate(TemplateView):
 
         request.user.addresses.all().delete()
         for key, value in address.items():
-            print(value)
             Address.objects.create(customer=request.user, city=value['city'], street=value['street'],
                                    plaque=int(value['plaque']))
 
-        print(request.user.addresses.all())
         return JsonResponse({'message': 'تغییرات با موفقیت ذخیره شد!'})
 
 
 def search(request):
     if request.method == "POST" and request.is_ajax():
         searched_content = request.POST.get('searched_content')
-
         queryset = MenuItem.objects.filter(food__name__contains=searched_content)
         if queryset:
-            print("food")
             return JsonResponse({
                 "type": "food",
                 "object_list":
@@ -67,7 +62,6 @@ def search(request):
                 "type": "restaurant",
                 "object_list": object_list
             })
-        
         else:
             return JsonResponse({'message': 'نتیجه ای پیدا نشد:('})
     return JsonResponse({})
