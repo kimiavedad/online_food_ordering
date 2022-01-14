@@ -1,33 +1,43 @@
 from allauth.account.forms import SignupForm
 from django import forms
-from accounts.models import Address
+from online_food_ordering.models import Category, Branch, Restaurant
 
 
-class CustomerSignupForm(SignupForm):
+class ManagerSignupForm(SignupForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.fields['city'] = forms.CharField(label="شعبه")
-        self.fields['street'] = forms.CharField(required=True)
-        self.fields['plaque'] = forms.CharField(required=False,)
+        self.fields['restaurant'] = forms.CharField(required=True, )
+        self.fields['branch'] = forms.CharField(label="شعبه")
+        self.fields['address'] = forms.CharField(required=True)
+        self.fields['description'] = forms.CharField(required=False,
+                                                     widget=forms.Textarea(
+                                                         attrs={'placeholder': "توضیحات شعبه", })
+                                                     )
+        self.fields['category'] = forms.ModelChoiceField(queryset=Category.objects.all())
 
         for visible in self.visible_fields():
             visible.field.widget.attrs['class'] = 'form-control'
+        self.fields['primary'] = forms.BooleanField(required=False)
 
     def save(self, request):
         print(self.cleaned_data)
-        city = self.cleaned_data['city']
-        street = self.cleaned_data['street']
-        plaque = self.cleaned_data['plaque']
+        restaurant = self.cleaned_data['restaurant']
+        branch = self.cleaned_data['branch']
+        address = self.cleaned_data['address']
+        primary = self.cleaned_data['primary']
+        category = self.cleaned_data['category']
+        description = self.cleaned_data['description']
 
         user = super().save(request)
-        user.role = 'مشتری'
-        user.is_staff = False
-        user.is_superuser = False
+        print(user.is_superuser)
+        user.role = 'مدیر رستوران'
+        user.is_staff = True
         user.save()
 
-        Address.objects.create(city=)
+        restaurant_obj, created = Restaurant.objects.get_or_create(name=restaurant)
+        print(branch)
         b_obj = Branch.objects.create(manager=user, name=branch, restaurant=restaurant_obj, category=category,
                                       address=address, description=description, primary=primary)
         print(b_obj.name)

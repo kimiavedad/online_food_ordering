@@ -1,32 +1,6 @@
 {% extends 'base.html' %}
 
 
-{% comment %} {% block navbar %}
-<div class="container-fluid">
-    <a class="navbar-brand" href="{% url 'home' %}">Foodie</a>
-
-    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item dropdown ms-auto">
-            <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button"
-               data-bs-toggle="dropdown" aria-expanded="false">
-                {{user.username}}
-            </a>
-            <ul class="dropdown-menu me-auto border-dark" aria-labelledby="navbarDropdown">
-                <li>
-                    <a class="dropdown-item text-dark" href="{% url 'login_success' %}">پنل کاربری</a>
-                </li>
-                <li>
-                    <hr class="dropdown-divider text-dark">
-                </li>
-                <li>
-                    <a class="dropdown-item text-dark" href="{% url 'account_logout' %}">خروج</a>
-                </li>
-            </ul>
-        </li>
-    </ul>
-</div>
-{% endblock navbar %} {% endcomment %}
-
 {% block content %}
 <div class="container p-3">
     <h1 class="mb-4">پنل کاربری</h1>

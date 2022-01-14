@@ -37,26 +37,6 @@
                             aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <a href="">
-                        <h5>قرمه سبزی</h5>
-                        <div class="row">
-                            <div class="col">رستوران نایب</div>
-                            <div class="col">65000 تومان</div>
-                        </div>
-                    </a>
-
-
-                    <hr>
-                    <a href=""></a>
-                    <h5>قرمه سبزی</h5>
-                    <div class="row">
-                        <div class="col">رستوران نایب</div>
-                        <div class="col">65000 تومان</div>
-                    </div>
-
-                    <hr>
-
-
                 </div>
             </div>
         </div>
@@ -108,11 +88,25 @@
                         </ul>
                     </div>
                     {% else %}
-                    <div class="nav-item ms-auto mb-2 pe-2 mb-lg-0">
-                        <a class="btn btn-outline-danger text-dark px-3" href="{% url 'account_login' %}">ورود</a>
+
+                    <div class="nav-item ms-auto pe-3 mb-2 mb-lg-0">
+                        <a class="text-decoration-none text-dark" href="{% url 'account_login' %}">ورود</a>
                     </div>
-                    <div class="nav-item mb-2 pe-2 mb-lg-0">
-                        <a class="btn btn-outline-danger text-dark px-2" href="{% url 'account_signup' %}">ثبت‌نام</a>
+                    <div class="nav-item dropdown mb-2 mb-lg-0">
+                        <a class="nav-link dropdown-toggle ps-0 text-dark" href="#" id="signupDropdown" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            ثبت‌نام
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="signupDropdown">
+                            <li>
+                                <a class="dropdown-item text-dark" href="{% url 'signup_manager' %}"> ثبت‌نام مدیر
+                                    رستوران</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item text-dark" href="{% url 'account_signup' %}">ثبت‌نام مشتری</a>
+
+                            </li>
+                        </ul>
                     </div>
                     {% endif %}
                     <form class="d-flex">
@@ -144,6 +138,11 @@
     var URL_SEARCH = "{% url 'search' %}";
     var CSRF_TOKEN = '{{ csrf_token }}';
     var USER_IS_ADMIN = '{{request.user.is_superuser}}'
+
+
+
+
+
 </script>
 <script src="{% static 'js/search.js'%}"></script>
 {% block script %} {% endblock script %}

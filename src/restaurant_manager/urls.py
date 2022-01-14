@@ -8,5 +8,4 @@ urlpatterns = [
     path('menu/<int:pk>/delete/', MenuItemDelete.as_view(), name='menuitem_delete'),
     path('menu/<int:pk>/', MenuItemUpdate.as_view(), name='menuitem_edit'),
     path('menu/new/', MenuItemCreateView.as_view(), name='menuitem_create'),
-
 ]

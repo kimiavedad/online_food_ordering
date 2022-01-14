@@ -48,10 +48,10 @@ class Branch(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='branches')
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='branches')
     address = models.CharField(max_length=500)
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=500)
     description = models.TextField(max_length=500, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    primary = models.BooleanField()
+    primary = models.BooleanField(default=False)
 
     class Meta:
         verbose_name_plural = 'branches'

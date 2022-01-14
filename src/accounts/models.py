@@ -33,9 +33,8 @@ class RestaurantManager(CustomUser):
         proxy = True
 
     def save(self, *args, **kwargs):
-        if not self.pk:
-            self.role = CustomUser.Role.RESTAURANT_MANAGER
-            self.is_staff = True
+        self.role = CustomUser.Role.RESTAURANT_MANAGER
+        self.is_staff = True
         return super().save(*args, **kwargs)
 
 

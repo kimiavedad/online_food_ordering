@@ -174,4 +174,3 @@ ACCOUNT_UNIQUE_EMAIL = True
 # crispy config
 
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
-

@@ -17,8 +17,10 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
+from restaurant_manager.views import RestaurantManagerSignUpView
 
 urlpatterns = [
+    path('signup_manager/', RestaurantManagerSignUpView.as_view(), name='signup_manager'),
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
     path('', include('online_food_ordering.urls')),

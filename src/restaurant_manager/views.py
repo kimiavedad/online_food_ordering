@@ -3,6 +3,14 @@ from online_food_ordering.models import Order, MenuItem, Food
 from django.views.generic import ListView, TemplateView, DeleteView, UpdateView, CreateView
 from django.urls import reverse_lazy
 from django.http import JsonResponse
+from allauth.account.views import SignupView
+from .forms import ManagerSignupForm
+
+
+class RestaurantManagerSignUpView(SignupView):
+    template_name = 'account/signup.html'
+    form_class = ManagerSignupForm
+    success_url = reverse_lazy('account_login')
 
 
 class RestaurantManagerPanel(TemplateView):
@@ -55,9 +63,13 @@ class MenuItemCreateView(CreateView):
     def get_form_class(self):
         form_class = super().get_form_class()
         branch = self.request.user.branch
-        foods_in_menu = branch.menu.values_list('food', flat=True).distinct()
-        form_class.base_fields.get('food').queryset = Food.objects.exclude(pk__in=foods_in_menu).filter(
+        print(branch.category)
+        if branch.menu:
+            foods_in_menu = branch.menu.values_list('food', flat=True).distinct()
+            form_class.base_fields.get('food').queryset = Food.objects.exclude(pk__in=foods_in_menu).filter(
             category=branch.category)
+        else:
+            form_class.base_fields.get('food').queryset = Food.objects.filter(category=branch.category)
         return form_class
 
     def form_valid(self, form):
