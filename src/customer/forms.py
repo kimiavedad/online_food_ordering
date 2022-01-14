@@ -7,11 +7,15 @@ class CustomerSignupForm(SignupForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['email'].widget.attrs['placeholder'] = 'آدرس ایمیل'
+        self.fields['email'].label = 'ایمیل'
+        self.fields['password1'].widget.attrs['placeholder'] = ''
+        self.fields['password1'].label = 'رمز عبور'
 
-        self.fields['city'] = forms.CharField(label="شعبه")
-        self.fields['street'] = forms.CharField(required=True)
-        self.fields['plaque'] = forms.CharField(required=False,)
-
+        self.fields['city'] = forms.CharField(label="شهر")
+        self.fields['street'] = forms.CharField(required=True, label="خیابان")
+        self.fields['plaque'] = forms.CharField(required=False, label="پلاک")
+        print(self.visible_fields())
         for visible in self.visible_fields():
             visible.field.widget.attrs['class'] = 'form-control'
 
@@ -27,30 +31,12 @@ class CustomerSignupForm(SignupForm):
         user.is_superuser = False
         user.save()
 
-        Address.objects.create(city=)
-        b_obj = Branch.objects.create(manager=user, name=branch, restaurant=restaurant_obj, category=category,
-                                      address=address, description=description, primary=primary)
-        print(b_obj.name)
+        Address.objects.create(customer=user, city=city, street=street, plaque=plaque, primary=True)
         return user
 
-    def clean_branch(self):
+    def clean_plaque(self):
         cleaned_data = super().clean()
-        branch = cleaned_data.get("branch")
-        restaurant = cleaned_data.get("restaurant")
-        primary = cleaned_data.get('primary')
-
-        if Branch.objects.filter(restaurant__name=restaurant, name=branch).exists():
-            raise forms.ValidationError("این شعبه قبلا ثبت شده است.")
-
-        return branch
-
-    def clean_primary(self):
-        cleaned_data = super().clean()
-        restaurant = cleaned_data.get("restaurant")
-        primary = cleaned_data.get('primary')
-
-        print(Branch.objects.filter(restaurant__name=restaurant, primary=True).exists(), "shobe asli hast")
-        print(primary, "inam zade asli")
-        if Branch.objects.filter(restaurant__name=restaurant, primary=True).exists() and primary:
-            raise forms.ValidationError("برای این رستوران قبلا شعبه اصلی ثبت شده است.")
-        return primary
+        plaque = cleaned_data.get("plaque")
+        if int(plaque) <= 0:
+            raise forms.ValidationError("پلاک نامعتبر")
+        return plaque

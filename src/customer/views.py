@@ -1,14 +1,18 @@
 from collections import defaultdict
-
-from django.shortcuts import render
 from django.views.generic import TemplateView, ListView, View
 from online_food_ordering.models import Order, MenuItem, Restaurant
 from accounts.models import Customer, Address
-from django.urls import reverse_lazy, reverse
-from django.shortcuts import redirect
+from django.urls import reverse_lazy
 from django.http import JsonResponse
-from django.forms import inlineformset_factory
+from allauth.account.views import SignupView
+from .forms import CustomerSignupForm
 import re
+
+
+class CustomerSignUpView(SignupView):
+    template_name = 'account/signup.html'
+    form_class = CustomerSignupForm
+    success_url = reverse_lazy('account_login')
 
 
 class CustomerPanel(TemplateView):
