@@ -32,8 +32,15 @@ class CustomerUpdate(TemplateView):
     template_name = "customer/customer_edit.html"
 
     def post(self, request):
+        """
+            format of data wh received form frontend is:
+            { address[1].city: 'تهران', address[1].street: ' آزادی', address[1].plaque: '134' , primary:1}
+            so we want to create a nested dictionary that looks like this:
+            {'1': {'city': 'تهران', 'street': 'آزادی', 'plaque': '134'}
+        """
         address = defaultdict(dict)
-        request_items = list(request.POST.items())[1:].copy()
+        request_items = list(request.POST.items())[1:-1].copy()
+
         for k, v in request_items:
             _, no, key = re.split(r'\[(?P<no>\d+)\]\.', k, maxsplit=2)
             address[no][key] = v
@@ -42,6 +49,10 @@ class CustomerUpdate(TemplateView):
         for key, value in address.items():
             Address.objects.create(customer=request.user, city=value['city'], street=value['street'],
                                    plaque=int(value['plaque']))
+
+        primary_address = request.user.addresses.all()[int(request.POST.get("primary")) - 1]
+        primary_address.primary = True
+        primary_address.save()
 
         return JsonResponse({'message': 'تغییرات با موفقیت ذخیره شد!'})
 

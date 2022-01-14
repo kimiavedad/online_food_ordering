@@ -7,18 +7,17 @@
         <div class="ps-4 ms-1 pb-3"><strong class="pe-2">ایمیل: </strong> {{request.user.email}}</div>
 
         <button type="button" class="btn text-primary text-decoration-none btn-link shadow-none" data-bs-toggle="modal"
-                data-bs-target="#exampleModal"
-                data-bs-whatever="@mdo">
+                data-bs-target="#myModal">
             <i class="fas fa-plus me-2"></i>افزودن آدرس جدید
         </button>
 
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+        <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="ModalLabel"
              aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">آدرس جدید</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <h5 class="modal-title" id="ModalLabel">آدرس جدید</h5>
+                        <button type="button" class="btn-close"  data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form id="form-address">
@@ -70,7 +69,11 @@
                             <input name="address[{{forloop.counter}}].plaque" id="plaque-value" type="text"
                                    value="{{ address.plaque }}">
                         </div>
-                        <div class="col-6 pt-1 p-lg-0 col-lg-3 my-auto">
+                        <div class="col-lg-1 pt-1 p-lg-0 col-12">
+                            <input type="radio" id="primary" name="primary" value="{{forloop.counter}}" {% if address.primary %} checked="checked" {% endif %}>
+                            <label for="primary">اصلی</label><br>
+                        </div>
+                        <div class="col-6 pt-1 p-lg-0 col-lg-1 my-auto">
                             <button class="delete-btn btn btn-outline-danger">حذف</button>
                         </div>
                     </div>

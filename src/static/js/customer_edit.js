@@ -1,8 +1,9 @@
 $(document).ready(function () {
     
-    var myModal = $('#exampleModal')
+    var myModal = $('#myModal')
 
     $('.add-address').click(function (e) {
+        
         city = $("#city").val()
         street = $("#street").val()
         plaque = $("#plaque").val()
@@ -26,7 +27,11 @@ $(document).ready(function () {
                 <input name="address[${index}].plaque" id="plaque-value" type="text"
                        value="${plaque}">
             </div>
-            <div class="col-6 pt-1 p-lg-0 col-lg-3 my-auto">
+            <div class="col-lg-1 pt-1 p-lg-0 col-12">
+                <input type="radio" id="primary" name="primary" value="primary">
+                <label for="primary">اصلی</label><br>
+            </div>
+            <div class="col-6 pt-1 p-lg-0 col-lg-1 my-auto">
                 <button class="delete-btn btn btn-outline-danger">حذف</button>
             </div>
         </div>
@@ -48,12 +53,17 @@ $(document).ready(function () {
 
 
      $(document).on('submit','#form-info', function(e){
-         e.preventDefault()
-         const data = new FormData(e.target);
-         const formJSON = Object.fromEntries(data.entries());
-         formJSON['csrfmiddlewaretoken'] = CSRF_TOKEN;
-         console.log(formJSON)
-         sendAjax(formJSON)
+        e.preventDefault()
+        const data = new FormData(e.target);
+        const formJSON = Object.fromEntries(data.entries());
+        if (formJSON['primary']){
+            formJSON['csrfmiddlewaretoken'] = CSRF_TOKEN;
+            sendAjax(formJSON)
+        }
+        else {
+            alert("ابتدا آدرس اصلی خود را انتخاب کنید.")
+        }
+         
     })
 
     function sendAjax(data) {
