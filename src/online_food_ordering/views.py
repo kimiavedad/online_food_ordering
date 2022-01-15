@@ -89,10 +89,8 @@ def update_order(request):
             customer, bool_created = Customer.objects.get_or_create(device=device)
 
         order_item = request.POST.get('order_item')
-        print(order_item)
 
         order = Order.objects.get(customer=customer, status=0)
-        print(order.items.all()[int(order_item)])
         order.items.all()[int(order_item)].delete()
         if not order.items.all():
             order.delete()
@@ -130,12 +128,11 @@ class CartView(View):
             if request.user.is_authenticated:
                 customer = request.user
             else:
-                customer, created = Customer.objects.get_or_create(device=device)
+                customer, created = Customer.objects.get_or_create(username=device, device=device)
             order = get_cart(customer)
         return render(request, 'online_food_ordering/cart.html', {'order': order})
 
     def post(self, request):
-        print("request umad")
         queryset = self.request.user.addresses.all()
         return JsonResponse({"addresses": list(queryset.values('city', 'street', 'plaque', 'primary'))})
 

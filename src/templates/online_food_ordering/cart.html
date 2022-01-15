@@ -10,15 +10,10 @@
             </div>
 
             <div id="address-body" class="modal-body">
-                <form id="form-info" class="form-group" action="">{% csrf_token %}
+                <form id="select-address-form" class="form-group" action="">{% csrf_token %}
                     {% for address in request.user.addresses.all %}
-                    {% if address.primary %}
                         <input type="radio" id="address.{{forloop.counter}}" name="primary" value="{{forloop.counter}}"
-                               checked="checked">
-                    {% else %}
-                    <input type="radio" id="address.{{forloop.counter}}" name="primary" value="{{forloop.counter}}">
-                    {% endif %}
-
+                               {% if address.primary %} checked="checked" {% endif %}>
                         <label for="address.{{forloop.counter}}">{{ address.city }} - {{address.street}} - پلاک {{address.plaque}}</label>
                         <br>
                     {% endfor %}
@@ -26,7 +21,7 @@
             </div>
 
             <div class="modal-footer">
-                <button id="continue-btn" type="button" class="add-address btn btn-primary">ادامه</button>
+                <button id="continue-btn" type="submit" class="add-address btn btn-primary">ادامه</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
             </div>
         </div>
@@ -88,7 +83,6 @@
 <script>
     var CSRF_TOKEN = '{{ csrf_token }}';
     var URL = "{% url 'update_order' %}";
-    var CART_URL = "{% url 'cart' %}";
     var CHECKOUT_URL = "{% url 'checkout' %}";
     var USER_IS_AUTHENTICATED = "{{user.is_authenticated}}";
 

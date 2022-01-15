@@ -43,7 +43,6 @@ class CustomerUpdate(TemplateView):
         request_items.pop('csrfmiddlewaretoken')
         primary_address_index = int(request_items.pop('primary')) - 1
 
-        print(request_items)
         for k, v in request_items.items():
             _, no, key = re.split(r'\[(?P<no>\d+)\]\.', k, maxsplit=2)
             address[no][key] = v
@@ -58,10 +57,6 @@ class CustomerUpdate(TemplateView):
         primary_address.save()
 
         return JsonResponse({'message': 'تغییرات با موفقیت ذخیره شد!'})
-
-
-class Checkout(View):
-    pass
 
 
 def search(request):
@@ -88,8 +83,25 @@ def search(request):
             return JsonResponse({'message': 'نتیجه ای پیدا نشد:('})
     return JsonResponse({})
 
-class Checkout(View):
-    pass
+
+def checkout(request):
+    if request.method == 'POST' and request.is_ajax():
+        selected_address_index = int(request.POST.get("selected_address_index"))
+        selected_address = Address.objects.all()[selected_address_index]
+        customer = request.user
+        order = Order.objects.get(customer=customer, status=0)
+        order.status = 1
+        order.address = selected_address
+        order.save()
+
+        print(order)
+        for orderitem in order.items.all():
+            orderitem.menu_item.stock -= orderitem.quantity
+            orderitem.menu_item.save()
+            print(orderitem.menu_item)
+
+        return JsonResponse({"message": "سفارش شما ثبت شد.:)"})
+    return JsonResponse({})
 # todo: 1.get address
 # todo: 2.get cart cookie
 # todo: 2.delete cart cookie
