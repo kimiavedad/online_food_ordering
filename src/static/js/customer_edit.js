@@ -28,7 +28,7 @@ $(document).ready(function () {
                        value="${plaque}">
             </div>
             <div class="col-lg-1 pt-1 p-lg-0 col-12">
-                <input type="radio" id="primary" name="primary" value="primary">
+                <input type="radio" id="primary" name="primary" value="${index}">
                 <label for="primary">اصلی</label><br>
             </div>
             <div class="col-6 pt-1 p-lg-0 col-lg-1 my-auto">
@@ -42,9 +42,30 @@ $(document).ready(function () {
 
 
     $(document).on('click', ".delete-btn", function(e) {
+        console.log("hazf shod")
         e.preventDefault()
         if ($('.delete-btn').length > 1) {
             $(this).closest($('.li-address')).remove()
+            addresses = $(".li-address > div")
+            addresses.each(function(index) {
+            console.log(index)
+                city = $(this).children().eq(0).children().last();
+                console.log(city)
+                city.attr("name", `address[${index+1}].city`)
+                console.log(city.attr("name"))
+                street = $(this).children().eq(1).children().last();
+                street.attr("name", `address[${index+1}].street`)
+                console.log(street.attr("name"))
+                plaque = $(this).children().eq(2).children().last();
+                plaque.attr("name", `address[${index+1}].plaque`)
+                console.log(plaque.attr("name"))
+//
+                primary = $(this).children().eq(3).children().first();
+                primary.val(`${index+1}`)
+                console.log(primary.val())
+
+                
+              });
         }
         else {
             alert("You must have one address at least!")
@@ -56,8 +77,12 @@ $(document).ready(function () {
         e.preventDefault()
         const data = new FormData(e.target);
         const formJSON = Object.fromEntries(data.entries());
+        console.log(formJSON["primary"])
+
         if (formJSON['primary']){
+
             formJSON['csrfmiddlewaretoken'] = CSRF_TOKEN;
+            console.log(formJSON)
             sendAjax(formJSON)
         }
         else {

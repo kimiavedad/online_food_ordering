@@ -1,6 +1,38 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
+<div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="addressModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">انتخاب آدرس</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div id="address-body" class="modal-body">
+                <form id="form-info" class="form-group" action="">{% csrf_token %}
+                    {% for address in request.user.addresses.all %}
+                    {% if address.primary %}
+                        <input type="radio" id="address.{{forloop.counter}}" name="primary" value="{{forloop.counter}}"
+                               checked="checked">
+                    {% else %}
+                    <input type="radio" id="address.{{forloop.counter}}" name="primary" value="{{forloop.counter}}">
+                    {% endif %}
+
+                        <label for="address.{{forloop.counter}}">{{ address.city }} - {{address.street}} - پلاک {{address.plaque}}</label>
+                        <br>
+                    {% endfor %}
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button id="continue-btn" type="button" class="add-address btn btn-primary">ادامه</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <section class="pt-5 mt-4">
     <div class="container p-3 " id="cart">
         {% if order != None %}
@@ -12,7 +44,10 @@
                         <th><h5>تعداد: <strong>{{order.number_of_items}}</strong></h5></th>
                         <th><h5> هزینه کل:<strong> {{order.total_price}}تومان </strong></h5></th>
                         <th>
-                            <button class="btn btn-danger" type="submit">نهایی کردن سفارش</button>
+                            <button id="checkout-btn" class="btn btn-danger" type="submit"
+                                    data-bs-target="#addressModal">نهایی کردن سفارش
+                            </button>
+
                         </th>
                     </tr>
                 </table>
@@ -52,9 +87,18 @@
 {% block script %}
 <script>
     var CSRF_TOKEN = '{{ csrf_token }}';
-    var URL = {% url 'update_order' %}
+    var URL = "{% url 'update_order' %}";
+    var CART_URL = "{% url 'cart' %}";
+    var CHECKOUT_URL = "{% url 'checkout' %}";
+    var USER_IS_AUTHENTICATED = "{{user.is_authenticated}}";
+
+
+
+
+
 </script>
 <script src="{% static 'js/delete_cart.js' %}"></script>
+<script src="{% static 'js/checkout.js' %}"></script>
 {% endblock script %}
 
 

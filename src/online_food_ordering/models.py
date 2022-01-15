@@ -86,18 +86,22 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     status = models.IntegerField(choices=STATUS_CHOICES, )
 
+
     def __str__(self):
         return f"{self.customer} | {self.status}"
+
 
     @property
     def date_jalali(self):
         return jdatetime.datetime.fromgregorian(datetime=self.created_at)
+
 
     @property
     def total_price(self):
         order_items = self.items.all()
         total_price = sum([item.total for item in order_items])
         return total_price
+
 
     @property
     def number_of_items(self):

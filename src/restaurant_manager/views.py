@@ -67,7 +67,7 @@ class MenuItemCreateView(CreateView):
         if branch.menu:
             foods_in_menu = branch.menu.values_list('food', flat=True).distinct()
             form_class.base_fields.get('food').queryset = Food.objects.exclude(pk__in=foods_in_menu).filter(
-            category=branch.category)
+                category=branch.category)
         else:
             form_class.base_fields.get('food').queryset = Food.objects.filter(category=branch.category)
         return form_class

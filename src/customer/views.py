@@ -4,7 +4,7 @@ from online_food_ordering.models import Order, MenuItem, Restaurant
 from accounts.models import Customer, Address
 from django.urls import reverse_lazy
 from django.http import JsonResponse
-from allauth.account.views import SignupView
+from allauth.account.views import SignupView, LoginView
 from .forms import CustomerSignupForm
 import re
 
@@ -39,9 +39,12 @@ class CustomerUpdate(TemplateView):
             {'1': {'city': 'تهران', 'street': 'آزادی', 'plaque': '134'}
         """
         address = defaultdict(dict)
-        request_items = list(request.POST.items())[1:-1].copy()
+        request_items = dict(list(request.POST.items())).copy()
+        request_items.pop('csrfmiddlewaretoken')
+        primary_address_index = int(request_items.pop('primary')) - 1
 
-        for k, v in request_items:
+        print(request_items)
+        for k, v in request_items.items():
             _, no, key = re.split(r'\[(?P<no>\d+)\]\.', k, maxsplit=2)
             address[no][key] = v
 
@@ -50,11 +53,15 @@ class CustomerUpdate(TemplateView):
             Address.objects.create(customer=request.user, city=value['city'], street=value['street'],
                                    plaque=int(value['plaque']))
 
-        primary_address = request.user.addresses.all()[int(request.POST.get("primary")) - 1]
+        primary_address = request.user.addresses.all()[primary_address_index]
         primary_address.primary = True
         primary_address.save()
 
         return JsonResponse({'message': 'تغییرات با موفقیت ذخیره شد!'})
+
+
+class Checkout(View):
+    pass
 
 
 def search(request):
@@ -81,8 +88,8 @@ def search(request):
             return JsonResponse({'message': 'نتیجه ای پیدا نشد:('})
     return JsonResponse({})
 
-# class Checkout(View):
-#     pass
+class Checkout(View):
+    pass
 # todo: 1.get address
 # todo: 2.get cart cookie
 # todo: 2.delete cart cookie

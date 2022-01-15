@@ -1,7 +1,7 @@
 from django.db.models import Sum
 from django.shortcuts import render
 from django.shortcuts import redirect, reverse
-from django.views.generic import ListView, DetailView, TemplateView
+from django.views.generic import ListView, DetailView, TemplateView, View
 from django.http.response import JsonResponse
 from django.contrib import messages
 from .models import *
@@ -49,20 +49,6 @@ class BranchDetailView(ListView):
         return context
 
 
-def cart(request):
-
-    if request.user.is_authenticated:
-        customer = request.user
-    else:
-        device = request.COOKIES['device']
-        customer, created = Customer.objects.get_or_create(device=device)
-
-    order = None
-    if Order.objects.filter(customer=customer, status=0).exists():
-        order = Order.objects.get(customer=customer, status=0)
-    return render(request, 'online_food_ordering/cart.html', {'order': order})
-
-
 class FoodDetailView(DetailView):
     model = MenuItem
     template_name = "online_food_ordering/food_detail.html"
@@ -84,6 +70,7 @@ class FoodDetailView(DetailView):
             if not order.items.first().is_same_restaurant(menu_item.branch):
                 order.items.all().delete()
                 messages.info(request, "سبد خرید قبلی شما پاک شد!")
+
         else:
             order = Order.objects.create(customer=customer, status=0)
         order_item, bool_created = OrderItem.objects.get_or_create(order=order, menu_item=menu_item)
@@ -113,5 +100,42 @@ def update_order(request):
     return JsonResponse({})
 
 
-class CustomerPanel(TemplateView):
-    pass
+def get_cart(customer):
+    if Order.objects.filter(customer=customer, status=0).exists():
+        return Order.objects.filter(customer=customer, status=0).first()
+    return None
+
+
+def set_cart_for_real_customer(request, order):
+    real_customer = request.user
+    real_customer_order, created = Order.objects.get_or_create(customer=real_customer, status=0)
+    real_customer_order.items.all().delete()
+    real_customer_order.items.set(list(order.items.all()))
+    order.delete()
+    return real_customer_order
+
+
+class CartView(View):
+    def get(self, request, *args, **kwargs):
+        device = self.request.COOKIES.get('device')
+        if Customer.objects.filter(device=device).exists() and self.request.user.is_authenticated:
+            device_customer = Customer.objects.filter(device=device).last()
+            device_cart = get_cart(device_customer)
+            if device_cart:
+                order = set_cart_for_real_customer(self.request, device_cart)
+                device_customer.delete()
+            else:
+                order = get_cart(self.request.user)
+        else:
+            if request.user.is_authenticated:
+                customer = request.user
+            else:
+                customer, created = Customer.objects.get_or_create(device=device)
+            order = get_cart(customer)
+        return render(request, 'online_food_ordering/cart.html', {'order': order})
+
+    def post(self, request):
+        print("request umad")
+        queryset = self.request.user.addresses.all()
+        return JsonResponse({"addresses": list(queryset.values('city', 'street', 'plaque', 'primary'))})
+

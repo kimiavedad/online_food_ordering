@@ -30,7 +30,6 @@ $(document).ready(function () {
                     <hr>`)
 
                     if (USER_IS_ADMIN) {
-                console.log(value)
                         tag_a = $("#search-body").children("a").last()
                         $(tag_a).attr('href', `http:/\/127.0.0.1:8000/site_admin/food/${value['pk']}/edit/`)
                     }
