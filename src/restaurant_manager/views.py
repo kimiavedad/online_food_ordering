@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import render
 from online_food_ordering.models import Order, MenuItem, Food
 from django.views.generic import ListView, TemplateView, DeleteView, UpdateView, CreateView
@@ -7,17 +8,23 @@ from allauth.account.views import SignupView
 from .forms import ManagerSignupForm
 
 
+class AbstractRestaurantManager(LoginRequiredMixin, UserPassesTestMixin):
+
+    def test_func(self):
+        return self.request.user.role == "مدیر رستوران"
+
+
 class RestaurantManagerSignUpView(SignupView):
     template_name = 'account/signup.html'
     form_class = ManagerSignupForm
     success_url = reverse_lazy('account_login')
 
 
-class RestaurantManagerPanel(TemplateView):
+class RestaurantManagerPanel(AbstractRestaurantManager, TemplateView):
     template_name = "restaurant_manager/restaurant_manager_panel.html"
 
 
-class OrderListView(ListView):
+class OrderListView(AbstractRestaurantManager, ListView):
     model = Order
     template_name = "restaurant_manager/orders.html"
 
@@ -34,7 +41,7 @@ class OrderListView(ListView):
             return JsonResponse({})
 
 
-class MenuItemListView(ListView):
+class MenuItemListView(AbstractRestaurantManager, ListView):
     model = MenuItem
     template_name = "restaurant_manager/menu.html"
 
@@ -42,19 +49,19 @@ class MenuItemListView(ListView):
         return MenuItem.objects.filter(branch=self.request.user.branch)
 
 
-class MenuItemDelete(DeleteView):
+class MenuItemDelete(AbstractRestaurantManager, DeleteView):
     model = MenuItem
     success_url = reverse_lazy('menu')
 
 
-class MenuItemUpdate(UpdateView):
+class MenuItemUpdate(AbstractRestaurantManager, UpdateView):
     model = MenuItem
     template_name = 'restaurant_manager/menuitem_edit.html'
     fields = ['stock', 'price']
     success_url = reverse_lazy('menu')
 
 
-class MenuItemCreateView(CreateView):
+class MenuItemCreateView(AbstractRestaurantManager, CreateView):
     model = MenuItem
     template_name = 'restaurant_manager/menuitem_create.html'
     fields = ['food', 'stock', 'price']

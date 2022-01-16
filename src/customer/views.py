@@ -112,4 +112,4 @@ def checkout(request):
             return JsonResponse({"message": "سفارش شما ثبت شد.:)"})
         else:
             return HttpResponseForbidden("<h1>403 Forbidden</h1>")
-    return HttpResponseNotFound('<h1>Page not found</h1>')
+    return HttpResponseNotFound('<h1>4o4 Page not found</h1>')
