@@ -3,10 +3,17 @@ from django.views.generic import TemplateView, ListView, View
 from online_food_ordering.models import Order, MenuItem, Restaurant
 from accounts.models import Customer, Address
 from django.urls import reverse_lazy
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseForbidden, HttpResponseNotFound
 from allauth.account.views import SignupView, LoginView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .forms import CustomerSignupForm
 import re
+
+
+class AbstractCustomerView(LoginRequiredMixin, UserPassesTestMixin):
+
+    def test_func(self):
+        return self.request.user.role == "مشتری"
 
 
 class CustomerSignUpView(SignupView):
@@ -15,11 +22,11 @@ class CustomerSignUpView(SignupView):
     success_url = reverse_lazy('account_login')
 
 
-class CustomerPanel(TemplateView):
+class CustomerPanel(AbstractCustomerView, TemplateView):
     template_name = "customer/customer_panel.html"
 
 
-class OrderListView(ListView):
+class OrderListView(AbstractCustomerView, ListView):
     model = Order
     template_name = "customer/orders.html"
 
@@ -28,7 +35,7 @@ class OrderListView(ListView):
         return self.queryset
 
 
-class CustomerUpdate(TemplateView):
+class CustomerUpdate(AbstractCustomerView, TemplateView):
     template_name = "customer/customer_edit.html"
 
     def post(self, request):
@@ -85,24 +92,24 @@ def search(request):
 
 
 def checkout(request):
+    is_customer = request.user.role == "مشتری"
     if request.method == 'POST' and request.is_ajax():
-        selected_address_index = int(request.POST.get("selected_address_index"))
-        selected_address = Address.objects.all()[selected_address_index]
-        customer = request.user
-        order = Order.objects.get(customer=customer, status=0)
-        order.status = 1
-        order.address = selected_address
-        order.save()
+        if is_customer:
+            selected_address_index = int(request.POST.get("selected_address_index"))
+            selected_address = Address.objects.all()[selected_address_index]
+            customer = request.user
+            order = Order.objects.get(customer=customer, status=0)
+            order.status = 1
+            order.address = selected_address
+            order.save()
 
-        print(order)
-        for orderitem in order.items.all():
-            orderitem.menu_item.stock -= orderitem.quantity
-            orderitem.menu_item.save()
-            print(orderitem.menu_item)
+            print(order)
+            for orderitem in order.items.all():
+                orderitem.menu_item.stock -= orderitem.quantity
+                orderitem.menu_item.save()
+                print(orderitem.menu_item)
 
-        return JsonResponse({"message": "سفارش شما ثبت شد.:)"})
-    return JsonResponse({})
-# todo: 1.get address
-# todo: 2.get cart cookie
-# todo: 2.delete cart cookie
-# todo: 3.create order and order items from this cart
+            return JsonResponse({"message": "سفارش شما ثبت شد.:)"})
+        else:
+            return HttpResponseForbidden("<h1>403 Forbidden</h1>")
+    return HttpResponseNotFound('<h1>Page not found</h1>')
