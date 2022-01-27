@@ -40,10 +40,10 @@ class CustomerUpdate(AbstractCustomerView, TemplateView):
 
     def post(self, request):
         """
-            format of data wh received form frontend is:
+            format of data we received form frontend is:
             { address[1].city: 'تهران', address[1].street: ' آزادی', address[1].plaque: '134' , primary:1}
             so we want to create a nested dictionary that looks like this:
-            {'1': {'city': 'تهران', 'street': 'آزادی', 'plaque': '134'}
+            {'1': {'city': 'تهران', 'street': 'آزادی', 'plaque': '134'},}
         """
         address = defaultdict(dict)
         request_items = dict(list(request.POST.items())).copy()
@@ -88,7 +88,7 @@ def search(request):
             })
         else:
             return JsonResponse({'message': 'نتیجه ای پیدا نشد:('})
-    return JsonResponse({})
+    return HttpResponseNotFound('<h1>4o4 Page not found</h1>')
 
 
 def checkout(request):

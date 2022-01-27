@@ -136,3 +136,4 @@ class CartView(View):
         queryset = self.request.user.addresses.all()
         return JsonResponse({"addresses": list(queryset.values('city', 'street', 'plaque', 'primary'))})
 
+
